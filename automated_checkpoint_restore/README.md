@@ -39,7 +39,7 @@ It contains the essential files required to setup our second container which are
 * Dockerfile: Dockerfile to create container_2 with required specifications.
 * simple_loop: This is a directory that will be copied in our container_2 and consists of files and folders for restoring a given test process.
 
-### daemeon_storage
+### daemon_storage
 An empty directory that acts as a storage for daemon where the checkpoints retrieved from container_1 will be stored
 
 ### controller.sh
