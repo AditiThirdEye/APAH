@@ -12,8 +12,8 @@ At any point in time, if it feels the container is being overutilized and has th
 ## Tools and Technologies
 ***
 The following instance is developed using following technologies:
-* [Docker](https://docs.docker.com/engine/install/): Version __
-* [CRIU](https://criu.org/Installation): Version _.___
+* [Docker](https://docs.docker.com/engine/install/): Version 20.10.1
+* [CRIU](https://criu.org/Installation): Version 3.15
 * Shell Scripting
 
 ## Setup
@@ -59,6 +59,7 @@ A detailed structure is as follows:
 * checkpoint(directory): Directory where the checkpoints of process are stored by checkpoint_here.sh
 * restore_here.sh: Shell Script that automates the restoration of a process once checkpoints are received from daemon
 * restore: Directory where the checkpoints transferred by daemon(controller.sh) are stored in container_2.
+* criu_3.14-1_amd64.deb: CRIU package which will help us to emulate the checkpoint restore facility
 
 ## Steps to simulate the system
 After cloning the repository one can find all the required folders and files in the automated_checkpoint_restore directory.<br />
