@@ -106,6 +106,10 @@ Now follow these steps:
 Now just observe the system and see the functioning.<br />
 <br />
 
+
+![Demo Image 1](https://github.com/AditiThirdEye/APAH/blob/main/automated_checkpoint_restore/checkpoint_restore_1.png?raw=true)
+![Demo Image 2](https://github.com/aditithirdeye/apah/blob/main/automated_checkpoint_restore/checkpoint_restore_2.png?raw=true)
+
 #### Note:
 
 * The migration of checkpoints to container_2 are dependent upon threshold set for CPU utilization of container_1. For demonstration process as the test program(counter program) is lightweight the threshold is set quite low but for actual load intensive processes threshold can be changed accordingly in controller.sh.<br />
