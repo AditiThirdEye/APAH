@@ -9,7 +9,7 @@ To replicate the above instance, we have a setup of 2 Kali-Linux docker contain
 Now the prime responsibility of the daemon, Docker host is to pull the checkpoints from the container_1 after regular intervals of time and at the same time monitor the CPU utilization of the container_1 to ensure the container isn't overloaded.<br />
 At any point in time, if it feels the container is being overutilized and has the chance of breakdown, it immediately migrates the latest checkpoint of the process running at container_1 to container_2 and then container_2 runs the received checkpoints to cause the process to continue executing from the last saved state rather than restating the process again thereby achieving our intended results.
 
-## Technologies
+## Tools and Technologies
 ***
 The following instance is developed using following technologies:
 * [Docker](https://docs.docker.com/engine/install/): Version __
@@ -29,26 +29,26 @@ This directory structure consists of the following:
 * daemon_storage
 * controller.sh
 
-#### container1
+### container1
 It contains the essential files required to setup our first container which are:
 * Dockerfile: Dockerfile to create container_1 with required specifications.
 * simple_loop: This is a directory that will be copied in our container_1 and consists of files and folders for running and checkpointing our test process.
 
-#### container2
+### container2
 It contains the essential files required to setup our second container which are:
 * Dockerfile: Dockerfile to create container_2 with required specifications.
 * simple_loop: This is a directory that will be copied in our container_2 and consists of files and folders for restoring a given test process.
 
-#### daemeon_storage
+### daemeon_storage
 An empty directory that acts as a storage for daemon where the checkpoints retrieved from container_1 will be stored
 
-#### controller.sh
+### controller.sh
 The coordinating shell script that performs following tasks:
 * Retrieves updated checkpoints from container_1 once available
 * Monitors the cpu state of container_1
 * Transfers latest retrieved checkpoints to container_2 for restore if cpu utilization of container_1 exceeds a given threshold value
 
-#### simple_loop
+### simple_loop
 This directory name is common in both directories container1 and container2, and this directory will be a part of both the containers that help to run and manage the process.
 In our case the process is associated with simple counting program that prints integers from 0 to 99 with a delay of 1s.<br />
 A detailed structure is as follows:
@@ -61,20 +61,54 @@ A detailed structure is as follows:
 * restore: Directory where the checkpoints transferred by daemon(controller.sh) are stored in container_2.
 
 ## Steps to simulate the system
-To demonstrate the working of above follow the given steps:
-1. Clone the repository
-2. Move into automated_checkpoint_restore directory
-3. Create the images for container_1 and container_2 
-    1. For container_1
-      * Move to directory container1
-      * Build image from Dockerfile by typing the command as follows:<br />
-      `docker build .` <br /><br />
-      `docker run --privileged -it --name container_1 [container_image_id] /bin/sh`<br />
-    2. For container_2
-      * Move to directory container2
-      * Build image from Dockerfile by typing the command as follows:<br />
-      `docker build .` <br /><br />
-      `docker run --privileged -it --name container_2 [container_image_id] /bin/sh`<br />
-    3. 
-    
-     
+After cloning the repository one can find all the required folders and files in the automated_checkpoint_restore directory.<br />
+To run our system we need to complete following steps:
+1. Creating container_1
+2. Creating container_2
+3. Executing the scripts
+
+### Creating container_1<br />
+Open a new terminal and move to the directory container2.
+* Build image from Dockerfile by typing the command as follows:<br />
+ `docker build .` <br /><br />
+* Get the latest image id by below command:<br />
+ `docker image ls`<br /><br />
+* Then build the container by replacing the container_image_id with image id obtained from above command:<br />
+ `docker run --privileged -it --name container_1 [container_image_id] /bin/sh`<br />
+
+After executing above command, the container terminal will be attached to our main terminal and now we can access container_1
+<br /><br />
+
+### Creating container_2<br />
+Open a new terminal and move to the directory container2.
+* Build image from Dockerfile by typing the command as follows:<br />
+ `docker build .` <br /><br />
+* Get the latest image id by below command:<br />
+ `docker image ls`<br /><br />
+* Then build the container by replacing the container_image_id with image id obtained from above command:<br />
+ `docker run --privileged -it --name container_2 [container_image_id] /bin/sh`<br />
+
+After executing above command, the container terminal will be attached to our main terminal and now we can access container_2
+<br /><br />
+
+### Executing the scripts
+Now open another terminal and move to the main directory i.e. automated_checkpoint_restore<br />
+This terminal will act as our daemon which will help us to monitor the containers and coordinate checkpoint restore activities.<br />
+Now follow these steps:
+* In daemon terminal run the controller.sh script which will initiate the monitoring and coordination process.<br/>
+ `bash controller.sh`<br/>
+* In container_1 run the apah.sh script. This script will in turn run the simple_loop(our counting program) and checkpoint_here.sh<br/>
+ `./apah.sh`
+* In container_2 run the restore_here.sh script. This script will be help in intiating process restore once it receives checkpoints<br/>
+ `./restore_here.sh`
+<br />
+Now just observe the system and see the functioning.<br />
+<br />
+
+#### Note:
+
+* The migration of checkpoints to container_2 are dependent upon threshold set for CPU utilization of container_1. For demonstration process as the test program(counter program) is lightweight the threshold is set quite low but for actual load intensive processes threshold can be changed accordingly in controller.sh.<br />
+* To change the program to be run one needs to include the given executable file in simple_loop directory and change the filename to be executed accordingly in the apah.sh file.
+
+
+
